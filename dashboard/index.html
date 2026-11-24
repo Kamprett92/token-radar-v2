@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Token Radar — which pre-token protocol is worth farming next</title>
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <p class="kicker">MAKE.FUN · TOKEN-RADAR-01 · MODEL RADAR-2</p>
+    <h1>Token Radar</h1>
+    <p class="sub">Every protocol in the snapshot that records no token, ranked by what its token
+    would be worth if it launched at a category-comparable value — and what to do to farm it.</p>
+    <div class="stats" id="stats"></div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="card" id="boardsec">
+    <h2>The board</h2>
+    <div class="controls">
+      <input id="q" type="search" placeholder="Search name or category…" aria-label="Search">
+      <select id="cat" aria-label="Category"><option value="">All categories</option></select>
+      <select id="chain" aria-label="Chain"><option value="">All chains</option></select>
+      <label class="chk"><input id="wl" type="checkbox"> Watchlist only</label>
+      <select id="sort" aria-label="Sort">
+        <option value="rank">Sort: rank</option>
+        <option value="implied">Sort: implied value</option>
+        <option value="tvl">Sort: TVL</option>
+        <option value="growth">Sort: 7d growth</option>
+        <option value="age">Sort: age</option>
+      </select>
+    </div>
+    <p class="count" id="count"></p>
+    <div class="tablewrap">
+      <table id="board">
+        <thead><tr>
+          <th>#</th><th>Protocol</th><th>Category</th><th>Chains</th>
+          <th class="num">TVL</th><th class="num">7d</th><th class="num">Age</th><th class="num">Implied value</th>
+        </tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+    <p class="note">Click a row for the protocol's detail view: the model breakdown and its farm plan.
+    ★ marks the 40 protocols on the house watchlist.</p>
+  </section>
+
+  <section class="card hidden" id="detail"></section>
+
+  <section class="card" id="method">
+    <h2>How the value is calculated</h2>
+    <p class="formula">implied value = TVL &times; category multiple &times; growth multiplier &times; age multiplier</p>
+    <ul class="plain">
+      <li><b>Category multiple</b> — the median market-cap/TVL of live-token protocols in the same
+      category (at least 3 comparables), otherwise the global comparable median. Measured from this
+      snapshot, clamped to 0.05–1.50. A DEX is not priced like a lending market.</li>
+      <li><b>Growth multiplier</b> — 1 + clamp(7-day TVL change, −50%, +100%) &times; 0.5. Momentum
+      counts, but a single wild week cannot more than 1.5&times; a protocol.</li>
+      <li><b>Age multiplier</b> — 0.80 + 0.20 &times; min(age, 730 days) / 730. A protocol that has
+      run two years without a token is worth a little more than a two-week-old one; age is a weak
+      signal, category and growth do the work.</li>
+    </ul>
+    <h3>Category multiples used</h3>
+    <div class="mults" id="multiples"></div>
+    <h3>What is excluded, and why</h3>
+    <p>Wrapped, staked and bridged products of tokens that already trade are never ranked: WBTC is
+    Bitcoin on Ethereum, Binance staked ETH is ETH in a staking product, and neither is a protocol
+    still waiting on a launch of its own. Versioned pools (V2, 2.0) and exchange products are out
+    for the same reason. The board is the watchlist's 40 protocols plus every other protocol the
+    same rule keeps — 198 rows in all.</p>
+    <p class="note">Implied values are this radar's own claim, never make.fun's. A protocol is
+    described as one that <i>records no token</i>, never as one that has none: its DefiLlama
+    record may simply not carry it.</p>
+  </section>
+
+  <section class="card">
+    <h2>Already trading — shown at market value, not ranked</h2>
+    <p>These protocols have a token. They are the comparables the multiples come from, shown here
+    so the board's prices can be checked — never mixed into the ranking.</p>
+    <div class="tablewrap">
+      <table id="live">
+        <thead><tr>
+          <th>Protocol</th><th>Token</th><th>Category</th><th>Chains</th>
+          <th class="num">TVL</th><th class="num">Market cap</th><th class="num">mcap / TVL</th>
+        </tr></thead>
+        <tbody id="liverows"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer class="card foot">
+    <p><b>Method.</b> Snapshot: DefiLlama protocols at or above $5,000,000 TVL, as of
+    <span id="asof"></span>. The board ranks 198 pre-token protocols by implied value; the live
+    table shows the 24 largest live-token protocols by market cap. Farm plans are this entry's
+    own suggestions, not financial advice.</p>
+    <p><b>Source.</b> <span id="source"></span></p>
+    <p class="note">Implied values are estimates from TVL, growth and age. A token may never
+    launch, and a launch may be worth far less — or more — than the number here.</p>
+  </footer>
+</main>
+<script src="../data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
